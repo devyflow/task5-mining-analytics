@@ -1,0 +1,6 @@
+node_modules/
+tmp/
+outputs/*-preview.png
+outputs/*.inspect.ndjson
+__pycache__/
+*.pyc

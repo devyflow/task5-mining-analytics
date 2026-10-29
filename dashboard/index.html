@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Weyland-Yutani Mine Intelligence</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="mark">WY</span><div><b>WEYLAND-YUTANI</b><small>Mine Intelligence / Task 5</small></div></div>
+    <button id="pdf" class="primary">Generate PDF report</button>
+  </header>
+  <main>
+    <section class="hero">
+      <div><p class="eyebrow">EXTRACTION ANALYTICS · LIVE FROM GENERATOR</p><h1>Operational anomaly console</h1><p>Adjust detection parameters, compare mines, and export an audit-ready report.</p></div>
+      <div class="source"><span>Data source</span><b id="source-name">Loading…</b><small id="period"></small></div>
+    </section>
+
+    <section class="controls panel">
+      <label>Mine<select id="mine"></select></label>
+      <label>Chart<select id="chart-type"><option value="line">Line</option><option value="bar">Bar</option><option value="stacked">Stacked</option></select></label>
+      <label>Trend degree<select id="degree"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+      <label>IQR multiplier<input id="iqr" type="number" min="0.5" max="5" step="0.1" value="1.5"></label>
+      <label>Z-score<input id="zscore" type="number" min="1" max="5" step="0.1" value="3"></label>
+      <label>MA distance %<input id="ma" type="number" min="1" max="100" step="1" value="25"></label>
+      <label>Grubbs α<select id="alpha"><option value="0.1">0.10</option><option value="0.05" selected>0.05</option><option value="0.01">0.01</option></select></label>
+    </section>
+
+    <section class="metrics" id="metrics"></section>
+
+    <section class="grid">
+      <article class="panel chart-panel"><div class="section-head"><div><p class="eyebrow">OUTPUT SERIES</p><h2 id="chart-title">Daily extraction</h2></div><div class="legend"><i class="dot output"></i>Output <i class="dot anomaly"></i>Anomaly <i class="line"></i>Trend</div></div><div class="canvas-wrap"><canvas id="chart"></canvas></div></article>
+      <aside class="panel methods"><p class="eyebrow">DETECTION MATRIX</p><h2>Active tests</h2><div id="method-list"></div><p class="method-note">A point is highlighted when any enabled method flags it. The report records every method responsible.</p></aside>
+    </section>
+
+    <section class="panel table-panel">
+      <div class="section-head"><div><p class="eyebrow">EXCEPTIONS</p><h2>Anomaly register</h2></div><strong id="anomaly-count"></strong></div>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Mine</th><th>Output</th><th>Direction</th><th>Deviation</th><th>Detected by</th><th>Event context</th></tr></thead><tbody id="anomalies"></tbody></table></div>
+    </section>
+  </main>
+  <footer>Building better worlds through accountable extraction · Generated analysis is deterministic for the loaded spreadsheet snapshot.</footer>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -2,6 +2,8 @@ node_modules/
 tmp/
 outputs/*-preview.png
 outputs/*.inspect.ndjson
+outputs/*-repair.png
+outputs/*.before-repair.xlsx
 __pycache__/
 *.pyc
 site/

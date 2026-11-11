@@ -75,6 +75,16 @@ for (const range of ["A4:B4", "D4:J4", "L4:M4", "O4:S4", "A14:B14"]) {
 }
 for (const range of ["B5:B12", "E5:J12", "M5:M11", "P5:S10", "B15:B16"]) assumptions.getRange(range).format.fill = input;
 assumptions.getRange("B5:B6").format.numberFormat = "yyyy-mm-dd";
+// DATE formulas survive native Sheets import without losing typed JS dates.
+assumptions.getRange("B5:B6").formulas = [["=DATE(2026,1,1)"], ["=DATE(2026,12,31)"]];
+assumptions.getRange("Q5:R10").formulas = [
+  ["=DATE(2026,2,12)", "=DATE(2026,2,18)"],
+  ["=DATE(2026,3,10)", "=DATE(2026,3,25)"],
+  ["=DATE(2026,5,3)", "=DATE(2026,5,6)"],
+  ["=DATE(2026,7,1)", "=DATE(2026,7,9)"],
+  ["=DATE(2026,8,15)", "=DATE(2026,9,10)"],
+  ["=DATE(2026,11,21)", "=DATE(2026,11,23)"],
+];
 assumptions.getRange("Q5:R10").format.numberFormat = "yyyy-mm-dd";
 assumptions.getRange("J5:J12").format.numberFormat = "0.00%";
 assumptions.getRange("M5:M11").format.numberFormat = "0.00";
@@ -113,7 +123,7 @@ generator.getRange("G2").formulas = [["=IF($A2=\"\",\"\",MAX(INDEX(Assumptions!$
 generator.getRange(`G2:G${lastRow}`).fillDown();
 generator.getRange("H2").formulas = [["=IF($A2=\"\",\"\",$G2*$F2+$C2*(1-$F2))"]];
 generator.getRange(`H2:H${lastRow}`).fillDown();
-generator.getRange("I2").formulas = [["=IF($A2=\"\",\"\",AVERAGE($H2,IFERROR(INDEX($H:$H,ROW()-Assumptions!$B$7),\"\"),IFERROR(INDEX($H:$H,ROW()-2*Assumptions!$B$7),\"\"),IFERROR(INDEX($H:$H,ROW()-3*Assumptions!$B$7),\"\"),IFERROR(INDEX($H:$H,ROW()-4*Assumptions!$B$7),\"\"),IFERROR(INDEX($H:$H,ROW()-5*Assumptions!$B$7),\"\"),IFERROR(INDEX($H:$H,ROW()-6*Assumptions!$B$7),\"\")))"]];
+generator.getRange("I2").formulas = [["=IF($A2=\"\",\"\",AVERAGEIFS($H$2:$H$1826,$B$2:$B$1826,$B2,$A$2:$A$1826,\">=\"&$A2-6,$A$2:$A$1826,\"<=\"&$A2))"]];
 generator.getRange(`I2:I${lastRow}`).fillDown();
 generator.getRange("L2").formulas = [["=IF($A2=\"\",\"\",IFERROR(INDEX(Assumptions!$O$5:$O$10,MATCH(1,(Assumptions!$P$5:$P$10=$B2)*(Assumptions!$Q$5:$Q$10<=$A2)*(Assumptions!$R$5:$R$10>=$A2),0)),\"\"))"]];
 generator.getRange(`L2:L${lastRow}`).fillDown();

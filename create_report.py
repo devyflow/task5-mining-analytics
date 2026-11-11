@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
+from reportlab.graphics.shapes import Drawing, Line, PolyLine, String
 
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
@@ -67,8 +69,28 @@ card_table.setStyle(TableStyle([
     ("ALIGN", (0, 0), (-1, -1), "CENTER"),
     ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
 ]))
-dashboard_path = ROOT / "outputs" / "dashboard-preview.png"
-dashboard = Image(str(dashboard_path), width=220 * mm, height=179 * mm)
+data = json.loads((ROOT / "dashboard" / "data.json").read_text(encoding="utf-8"))
+series = sorted((r for r in data["rows"] if r["mine"] == "Acheron Prime"), key=lambda r: r["date"])
+if not series:
+    raise ValueError("No Acheron Prime data available for the report chart")
+dashboard = Drawing(700, 310)
+dashboard.add(String(45, 288, "Acheron Prime - synthetic 2026 scenario", fontName="Helvetica-Bold", fontSize=13, fillColor=NAVY))
+dashboard.add(String(45, 269, f"{series[0]['date']} to {series[-1]['date']} | Tonnes", fontSize=9))
+low = min(r["output"] for r in series) * 0.9
+high = max(r["output"] for r in series) * 1.05
+for tick in range(6):
+    y = 45 + tick * 40
+    dashboard.add(Line(45, y, 680, y, strokeColor=colors.HexColor("#D7DEE5"), strokeWidth=0.5))
+    dashboard.add(String(5, y - 3, f"{low + (high-low)*tick/5:,.0f}", fontSize=8))
+for field, color, width in [("output", NAVY, 0.8), ("movingAverage", GOLD, 1.8)]:
+    points = []
+    for i, row in enumerate(series):
+        points.extend([45 + 635*i/max(len(series)-1,1), 45 + 200*(row[field]-low)/(high-low)])
+    dashboard.add(PolyLine(points, strokeColor=color, strokeWidth=width))
+for i, row in enumerate(series):
+    if row["date"].endswith("-01"):
+        dashboard.add(String(45 + 635*i/max(len(series)-1,1), 28, row["date"][5:7], fontSize=8))
+dashboard.add(String(45, 8, "Month     Blue: daily output     Gold: trailing 7-day average", fontSize=9))
 story.extend([
     card_table,
     Spacer(1, 8 * mm),
